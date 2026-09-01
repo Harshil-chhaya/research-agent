@@ -1,5 +1,6 @@
 from dotenv import load_dotenv
 import os
+import json
 import streamlit as st
 from langchain_google_genai import ChatGoogleGenerativeAI
 from langchain_tavily import TavilySearch
@@ -36,12 +37,12 @@ def get_agent():
         google_api_key=os.getenv("GEMINI_API_KEY")
     )
     tools = [TavilySearch(max_results=3)]
-    agent = create_react_agent(
-        llm, 
+    return create_react_agent(
+        llm,
         tools,
         prompt="You are a research assistant. You MUST always use the search tool to find current information before answering. Never answer from memory alone."
     )
-    return agent
+
 agent = get_agent()
 
 prompt = st.chat_input("What do you want to research?")
@@ -58,21 +59,25 @@ if prompt:
                 "messages": [{"role": "user", "content": prompt}]
             })
 
-            for m in result["messages"]:
-                print(type(m).__name__, ":", m.content[:200] if hasattr(m, 'content') and m.content else "")
-
-            response = result["messages"][-1].content
-            if isinstance(response, list):
-                response = response[0].get("text", str(response))
+            raw = result["messages"][-1].content
+            if isinstance(raw, list):
+                response = " ".join([item.get("text", "") for item in raw if isinstance(item, dict)])
+            else:
+                response = raw
 
             sources = []
             for msg in result["messages"]:
                 if isinstance(msg, ToolMessage):
                     try:
-                        import json
-                        tool_results = json.loads(msg.content)
-                        if isinstance(tool_results, list):
-                            for item in tool_results:
+                        content = msg.content
+                        if isinstance(content, str):
+                            tool_results = json.loads(content)
+                            if isinstance(tool_results, dict) and "results" in tool_results:
+                                for item in tool_results["results"]:
+                                    if isinstance(item, dict) and "url" in item:
+                                        sources.append(item["url"])
+                        elif isinstance(content, list):
+                            for item in content:
                                 if isinstance(item, dict) and "url" in item:
                                     sources.append(item["url"])
                     except:
