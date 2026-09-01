@@ -2,8 +2,12 @@
 
 An AI agent that autonomously searches the web, synthesizes information, and returns structured summaries using LangGraph and Gemini.
 
+## 🌐 Live Demo
+👉 [https://research-agent-5xo2.onrender.com](https://research-agent-5xo2.onrender.com)
+
 ## 🚀 Demo
 > Ask any research question → Agent searches the web → Returns a structured, synthesized answer
+
 
 ## 🧠 How It Works
 1. User submits a research question
