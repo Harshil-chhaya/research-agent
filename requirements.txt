@@ -1,0 +1,7 @@
+streamlit==1.62.0
+langchain
+langchain-google-genai
+langchain-tavily
+langgraph
+python-dotenv
+google-genai
