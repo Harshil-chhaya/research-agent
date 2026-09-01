@@ -10,9 +10,9 @@ from memory import save_message, load_history, clear_history
 
 load_dotenv()
 
-st.set_page_config(page_title="Research Agent", page_icon="🔍")
-st.title("🔍 Research Agent with Memory")
-st.caption("Ask me anything — I'll search the web and synthesize an answer.")
+st.set_page_config(page_title="Nexus — AI Research Agent", page_icon="🔍")
+st.title("🔍 Nexus")
+st.caption("An AI agent that searches the web, synthesizes information, and remembers your research.")
 
 if st.button("🗑️ Clear History"):
     clear_history()
